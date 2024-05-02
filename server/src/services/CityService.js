@@ -7,6 +7,14 @@ class CityService {
         return City.find({});
     }
 
+    async getRegions() {
+        return City.distinct("region");
+    }
+
+    async getCitiesByRegion(region) {
+        return City.find({region});
+    }
+
 }
 
 export const cityService = new CityService();
