@@ -21,6 +21,6 @@ const User = new mongoose.Schema({
     avatar: {
         type: String
     }
-});
+}, { timestamps: true });
 
 export default mongoose.model("User", User);

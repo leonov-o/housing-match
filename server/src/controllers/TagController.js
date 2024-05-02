@@ -1,4 +1,4 @@
-import {tagService} from "../services/TagService.js";
+import {tagService} from "../services/index.js";
 
 
 class TagController {
@@ -7,10 +7,14 @@ class TagController {
         try {
             const tags = await tagService.getTags();
             res.status(200).json({
+                success: true,
                 data: tags
             });
         } catch (e) {
-            res.status(500).json(e.message);
+            res.status(500).json({
+                success: false,
+                message: e.message
+            });
         }
     }
 
@@ -18,10 +22,14 @@ class TagController {
         try {
             const tag = await tagService.getTagById(req.params.id);
             res.status(200).json({
+                success: true,
                 data: tag
             });
         } catch (e) {
-            res.status(500).json(e.message);
+            res.status(500).json({
+                success: false,
+                message: e.message
+            });
         }
     }
 
@@ -29,10 +37,14 @@ class TagController {
         try {
             const tag = await tagService.createTag(req.body.name);
             res.status(200).json({
+                success: true,
                 data: tag
             });
         } catch (e) {
-            res.status(500).json(e.message);
+            res.status(500).json({
+                success: false,
+                message: e.message
+            });
         }
     }
 
