@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import router from './src/routes/router.js';
+import cookieParser from "cookie-parser";
 
 
 
@@ -11,7 +12,7 @@ app.use(cors({
     origin: '*'
 }));
 app.use(express.json());
-
+app.use(cookieParser());
 
 app.use("/api", router);
 

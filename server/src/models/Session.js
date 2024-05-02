@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const City = new mongoose.Schema({
+const Session = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
@@ -9,4 +9,4 @@ const City = new mongoose.Schema({
     expires_in: Number
 });
 
-export default mongoose.model("City", City);
+export default mongoose.model("Session", Session);
