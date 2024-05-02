@@ -3,6 +3,45 @@ import {userService} from "../services/index.js";
 
 class UserController {
 
+    async login(req, res) {
+        try {
+            const tokens = await userService.login(req.body);
+            res.cookie("refreshToken", tokens.refresh_token, {
+                httpOnly: true,
+                domain: "localhost",
+                maxAge: 1000 * 60 * 60 * 24 * 30
+            });
+            res.status(200).json({
+                success: true,
+                tokens
+            });
+        } catch (e) {
+            res.status(500).json({
+                success: false,
+                message: e.message
+            });
+        }
+    }
+
+    async register(req, res) {
+        try {
+            const tokens = await userService.register(req.body);
+            res.cookie("refreshToken", tokens.refresh_token, {
+                httpOnly: true,
+                domain: "localhost",
+                maxAge: 1000 * 60 * 60 * 24 * 30
+            });
+            res.status(200).json({
+                success: true,
+                tokens
+            });
+        } catch (e) {
+            res.status(500).json({
+                success: false,
+                message: e.message
+            });
+        }
+    }
     async createUser(req, res) {
         try {
             const user = await userService.createUser(req.body);
