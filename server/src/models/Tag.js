@@ -1,8 +1,15 @@
 import mongoose from "mongoose";
 
 const Tag = new mongoose.Schema({
-    id: Number,
-    name: String
+    id: {
+        type: Number,
+        unique: true,
+        required: true
+    },
+    name: {
+        type: String,
+        required: true
+    }
 });
 
 export default mongoose.model("Tag", Tag);
