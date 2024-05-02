@@ -7,10 +7,14 @@ class CityController {
         try {
             const cities = await cityService.getCities();
             res.status(200).json({
+                success: true,
                 data: cities
             });
         } catch (e) {
-            res.status(500).json(e.message);
+            res.status(500).json({
+                success: false,
+                message: e.message
+            });
         }
     }
 
@@ -18,10 +22,14 @@ class CityController {
         try {
             const cities = await cityService.getCitiesByRegion(req.params.region);
             res.status(200).json({
+                success: true,
                 data: cities
         });
         } catch (e) {
-            res.status(500).json(e.message);
+            res.status(500).json({
+                success: false,
+                message: e.message
+            });
         }
     }
 
@@ -29,10 +37,14 @@ class CityController {
         try {
             const regions = await cityService.getRegions();
             res.status(200).json({
+                success: true,
                 data: regions
         });
         } catch (e) {
-            res.status(500).json(e.message);
+            res.status(500).json({
+                success: false,
+                message: e.message
+            });
         }
     }
 }
