@@ -8,29 +8,19 @@ export const hashPassword = (password) => {
 export const comparePasswords = (password, hashedPassword) => {
     return bcrypt.compareSync(password, hashedPassword);
 }
-export const generateAccessToken = (user) => {
+export const generateAccessToken = (payload) => {
     return jwt.sign(
-        {
-            _id: user._id,
-            name: user.name,
-            surname: user.surname,
-            email: user.email,
-        },
+        payload,
         process.env.JWT_SECRET,
         {
-            expiresIn: '1h',
+            expiresIn: '30m',
         }
     );
 };
 
-export const generateRefreshToken = (user) => {
+export const generateRefreshToken = (payload) => {
     return jwt.sign(
-        {
-            _id: user._id,
-            name: user.name,
-            surname: user.surname,
-            email: user.email,
-        },
+        payload,
         process.env.JWT_SECRET,
         {
             expiresIn: '7d',
