@@ -3,7 +3,7 @@ import {tagService} from "../services/index.js";
 
 class TagController {
 
-    async getAllTags(req, res) {
+    async getAllTags(req, res, next) {
         try {
             const tags = await tagService.getTags();
             res.status(200).json({
@@ -11,14 +11,11 @@ class TagController {
                 data: tags
             });
         } catch (e) {
-            res.status(500).json({
-                success: false,
-                message: e.message
-            });
+            next(e);
         }
     }
 
-    async getTagById(req, res) {
+    async getTagById(req, res, next) {
         try {
             const tag = await tagService.getTagById(req.params.id);
             res.status(200).json({
@@ -26,14 +23,11 @@ class TagController {
                 data: tag
             });
         } catch (e) {
-            res.status(500).json({
-                success: false,
-                message: e.message
-            });
+            next(e);
         }
     }
 
-    async createTag(req, res) {
+    async createTag(req, res, next) {
         try {
             const tag = await tagService.createTag(req.body.name);
             res.status(200).json({
@@ -41,10 +35,7 @@ class TagController {
                 data: tag
             });
         } catch (e) {
-            res.status(500).json({
-                success: false,
-                message: e.message
-            });
+            next(e);
         }
     }
 
