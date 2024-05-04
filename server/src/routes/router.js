@@ -15,6 +15,7 @@ router.post("/tags", tagController.createTag);
 
 router.post("/login", userController.login);
 router.post("/register", userController.register);
+router.get('/activate/:link', userController.activate);
 router.post("/logout", authMiddleware, userController.logout);
 router.post("/refresh", userController.refresh);
 router.get("/users", authMiddleware, userController.getAllUsers);
