@@ -16,6 +16,7 @@ router.post("/tags", tagController.createTag);
 router.post("/login", userController.login);
 router.post("/register", userController.register);
 router.post("/logout", authMiddleware, userController.logout);
+router.post("/refresh", userController.refresh);
 router.get("/users", authMiddleware, userController.getAllUsers);
 router.get("/users/:id", authMiddleware, userController.getUserById);
 router.get("/users/email/:email", authMiddleware, userController.getUserByEmail);

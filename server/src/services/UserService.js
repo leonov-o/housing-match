@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import {comparePasswords, generateAccessToken, generateRefreshToken, hashPassword} from "../utils/jwt.js";
+import {comparePasswords, generateAccessToken, generateRefreshToken, hashPassword, verifyToken} from "../utils/jwt.js";
 import Session from "../models/Session.js";
 import {UserDto} from "../dtos/UserDto.js";
 import {ApiError} from "../exceptions/ApiError.js";
@@ -10,7 +10,6 @@ class UserService {
     async login({email, password}) {
         if (!email || !password) {
             throw ApiError.BadRequest("Необхідно ввести електронну пошту та пароль");
-
         }
 
         const user =  await User.findOne({email: email.toLowerCase()});
@@ -46,6 +45,20 @@ class UserService {
             throw ApiError.UnauthorizedError();
         }
         return Session.deleteOne({refresh_token: refreshToken});
+    }
+
+    async refresh(refreshToken) {
+        if (!refreshToken) {
+            throw ApiError.UnauthorizedError();
+        }
+        const userData = verifyToken(refreshToken);
+        const tokenFromDb = await Session.findOne({refresh_token: refreshToken});
+        if (!userData || !tokenFromDb) {
+            throw ApiError.UnauthorizedError();
+        }
+        const user = await User.findById(userData.id);
+
+        return this.createSession(user)
     }
 
 
