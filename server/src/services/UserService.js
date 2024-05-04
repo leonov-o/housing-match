@@ -1,8 +1,10 @@
 import User from "../models/User.js";
-import {comparePasswords, generateAccessToken, generateRefreshToken, hashPassword} from "../utils/jwt.js";
+import {comparePasswords, generateAccessToken, generateRefreshToken, hashPassword, verifyToken} from "../utils/jwt.js";
 import Session from "../models/Session.js";
 import {UserDto} from "../dtos/UserDto.js";
 import {ApiError} from "../exceptions/ApiError.js";
+import { v4 as uuidv4 } from 'uuid';
+import {mailService} from "./MailService.js";
 
 
 class UserService {
@@ -10,7 +12,6 @@ class UserService {
     async login({email, password}) {
         if (!email || !password) {
             throw ApiError.BadRequest("Необхідно ввести електронну пошту та пароль");
-
         }
 
         const user =  await User.findOne({email: email.toLowerCase()});
@@ -34,11 +35,20 @@ class UserService {
             throw ApiError.BadRequest("Користувач вже існує");
         }
 
-        //TODO generate activation link
-        //TODO send mail
+        const activation_link = uuidv4();
 
-        const newUser = await this.createUser({email, password, name, surname});
+        const newUser = await this.createUser({email, password, name, surname, activation_link});
+        mailService.sendActivationMail(email, `${process.env.SERVER_URL}/api/activate/${activation_link}`);
         return this.createSession(newUser);
+    }
+
+    async activate(activationLink) {
+        const user = await User.findOne({activation_link: activationLink})
+        if (!user) {
+            throw ApiError.BadRequest('Некоректне посилання активації')
+        }
+        user.is_activated = true;
+        await user.save();
     }
 
     async logout(refreshToken) {
@@ -46,6 +56,20 @@ class UserService {
             throw ApiError.UnauthorizedError();
         }
         return Session.deleteOne({refresh_token: refreshToken});
+    }
+
+    async refresh(refreshToken) {
+        if (!refreshToken) {
+            throw ApiError.UnauthorizedError();
+        }
+        const userData = verifyToken(refreshToken);
+        const tokenFromDb = await Session.findOne({refresh_token: refreshToken});
+        if (!userData || !tokenFromDb) {
+            throw ApiError.UnauthorizedError();
+        }
+        const user = await User.findById(userData.id);
+
+        return this.createSession(user)
     }
 
 
@@ -74,13 +98,14 @@ class UserService {
 
 
     async createUser(user) {
-        const {email, password, name, surname} = user;
+        const {email, password, name, surname, activation_link} = user;
 
         return User.create({
             email: email.toLowerCase(),
             password: hashPassword(password),
             name,
-            surname
+            surname,
+            activation_link
         });
     }
 
@@ -117,8 +142,9 @@ class UserService {
             }
             updateData.email = user.email.toLowerCase();
             updateData.is_activated = false;
-            //TODO generate activation link
-            //TODO send mail
+            const activation_link = uuidv4();
+            updateData.activation_link = activation_link;
+            mailService.sendActivationMail(user.email, `${process.env.SERVER_URL}/api/activate/${activation_link}`);
         }
         if (user.password) {
             updateData.password = hashPassword(user.password);
