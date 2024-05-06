@@ -1,4 +1,4 @@
-import {housingService, userService} from "../services/index.js";
+import {housingService} from "../services/index.js";
 
 class HousingController {
     async getHousing(req, res, next) {

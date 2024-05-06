@@ -8,7 +8,6 @@ import {
 } from "../controllers/index.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 import multer from "multer";
-import housing from "../models/Housing.js";
 
 const storage = multer.memoryStorage()
 const upload = multer({storage: storage})

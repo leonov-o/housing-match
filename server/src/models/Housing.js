@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import Tag from "./Tag.js";
 
 const Housing = new mongoose.Schema({
     name: String,
