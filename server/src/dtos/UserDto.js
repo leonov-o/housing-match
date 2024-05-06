@@ -15,9 +15,16 @@ export class UserDto {
         this.surname = model.surname;
         this.avatar = model.avatar;
         this.is_activated = model.is_activated;
-        return new Promise(resolve => model.avatar ? getObjectSignedUrl(model.avatar).then(url => resolve({
-            ...this,
-            avatar: url
-        })) : resolve(this));
+        if (this.avatar) {
+            return getObjectSignedUrl(this.avatar).then(url => {
+                this.avatar = {
+                    image: this.avatar,
+                    imageLink: url
+                };
+                return this;
+            });
+        } else {
+            return Promise.resolve(this);
+        }
     }
 }

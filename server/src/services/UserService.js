@@ -171,7 +171,7 @@ class UserService {
         if (id !== targetId) {
             throw ApiError.ForbiddenError();
         }
-        return User.findOneAndDelete({_id: id});
+        return User.findOneAndDelete({_id: targetId});
     }
 }
 

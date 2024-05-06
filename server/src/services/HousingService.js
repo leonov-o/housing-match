@@ -1,0 +1,154 @@
+import Housing from "../models/Housing.js";
+import {ApiError} from "../exceptions/ApiError.js";
+import {HousingDto} from "../dtos/index.js";
+import {deleteFile} from "../utils/s3.js";
+
+
+class HousingService {
+
+    async getHousing(body) {
+        const {page, limit, filters} = body;
+        const searchQuery = {};
+        if (filters.region) {
+            searchQuery.region = filters.region;
+        }
+        if (filters.city) {
+            searchQuery.city = filters.city;
+        }
+        if (filters.priceFrom !== undefined) {
+            searchQuery.price = { $gte: filters.priceFrom };
+        }
+        if (filters.priceTo !== undefined) {
+            if (!searchQuery.price) {
+                searchQuery.price = {};
+            }
+            searchQuery.price.$lte = filters.priceTo;
+        }
+        if (filters.rooms !== undefined) {
+            searchQuery.rooms = filters.rooms;
+        }
+        if (filters.capacity !== undefined) {
+            searchQuery.capacity = filters.capacity;
+        }
+        if (filters.tags && filters.tags.length > 0) {
+            searchQuery.tags = { $in: filters.tags };
+        }
+
+        if (filters.ownerId !== undefined) {
+            searchQuery.owner_id = filters.ownerId;
+        }
+
+        let sortQuery = {};
+
+        if (filters.sort === "priceAsc") {
+            sortQuery.price = 1; // Спочатку дешевші
+        } else if (filters.sort === "priceDesc") {
+            sortQuery.price = -1; // Спочатку дорожчі
+        } else if (filters.sort === "newest") {
+            sortQuery.createdAt = -1; // Спочатку нові (за датою створення)
+        } else if (filters.sort === "popular") {
+            sortQuery.views = -1; // Спочатку популярні (за кількістю переглядів)
+        }
+
+        const housing =  await Housing.find(searchQuery).sort(sortQuery).limit(limit).skip(page * limit);
+        return Promise.all(housing.map(async item => await new HousingDto(item)));
+
+    }
+
+    async getHousingById(id) {
+        const housing = await Housing.findById(id);
+        if(!housing) {
+            throw ApiError.BadRequest("Житло не знайдено");
+        }
+        housing.views = housing.views + 1;
+        await housing.save();
+        return new HousingDto(housing);
+    }
+
+    async createHousing(housing, ownerId) {
+        if (!ownerId) {
+            throw ApiError.UnauthorizedError();
+        }
+        if (!housing.name || !housing.region || !housing.city || !housing.address || housing.price < 0 || housing.rooms < 0 || housing.capacity < 0) {
+            throw ApiError.BadRequest("Невірні дані про житло");
+        }
+        if (housing.images.length < 1) {
+            throw ApiError.BadRequest("Потрібне хоча б одне зображення");
+        }
+        if (housing.contacts.length < 1) {
+            throw ApiError.BadRequest("Потрібен хоча б одни контакт");
+        }
+
+        const newHousing = await Housing.create({...housing, owner_id: ownerId})
+        return new HousingDto(newHousing);
+    }
+
+    async updateHousing(id, targetId, housing) {
+        const targetHousing = await Housing.findOne({_id: targetId});
+        if (!targetHousing) {
+            throw ApiError.BadRequest("Житло не знайдено");
+        }
+        if (id !== targetHousing.owner_id.toString()) {
+            throw ApiError.ForbiddenError();
+        }
+
+        const updateData = {};
+
+        if (housing.name) {
+            updateData.name = housing.name;
+        }
+        if (housing.region) {
+            updateData.region = housing.region;
+        }
+        if (housing.city) {
+            updateData.city = housing.city;
+        }
+        if (housing.address) {
+            updateData.address = housing.address;
+        }
+        if (housing.price) {
+            updateData.price = housing.price;
+        }
+        if (housing.description) {
+            updateData.description = housing.description;
+        }
+        if (housing.contacts) {
+            updateData.contacts = housing.contacts;
+        }
+        if (housing.capacity) {
+            updateData.capacity = housing.capacity;
+        }
+        if (housing.rooms) {
+            updateData.rooms = housing.rooms;
+        }
+        if (housing.tags) {
+            updateData.tags = housing.tags;
+        }
+
+        if (housing.images) {
+            updateData.images = housing.images;
+            targetHousing.images.forEach(image => {
+                if (!housing.images.includes(image)) {
+                    deleteFile(image);
+                }
+            })
+        }
+
+        const updatedHousing = await Housing.findOneAndUpdate({_id: targetId}, updateData, {new: true})
+        return new HousingDto(updatedHousing);
+    }
+
+    async deleteHousing(id, targetId) {
+        const targetHousing = await Housing.findOne({_id: targetId});
+        if (!targetHousing) {
+            throw ApiError.BadRequest("Житло не знайдено");
+        }
+        if (id !== targetHousing.owner_id.toString()) {
+            throw ApiError.ForbiddenError();
+        }
+        return Housing.findOneAndDelete({_id: targetId});
+    }
+
+}
+
+export const housingService = new HousingService();

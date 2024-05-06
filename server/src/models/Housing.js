@@ -9,12 +9,18 @@ const Housing = new mongoose.Schema({
     images: [String],
     price: Number,
     description: String,
+    contacts: [String],
+    rooms: Number,
     capacity: Number,
-    tags: [Tag],
+    tags: [Number],
+    views: {
+        type: Number,
+        default: 0
+    },
     owner_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }
-});
+}, {timestamps: true});
 
 export default mongoose.model("Housing", Housing);

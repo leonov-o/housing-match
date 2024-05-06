@@ -1,3 +1,5 @@
 export {userController} from "./UserController.js"
 export {cityController} from "./CityController.js"
 export {tagController} from "./TagController.js"
+export {fileController} from "./FileController.js"
+export {housingController} from "./HousingController.js"
