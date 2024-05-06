@@ -3,8 +3,9 @@ import {comparePasswords, generateAccessToken, generateRefreshToken, hashPasswor
 import Session from "../models/Session.js";
 import {UserDto} from "../dtos/UserDto.js";
 import {ApiError} from "../exceptions/ApiError.js";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {mailService} from "./MailService.js";
+import {deleteFile} from "../utils/s3.js";
 
 
 class UserService {
@@ -14,7 +15,7 @@ class UserService {
             throw ApiError.BadRequest("Необхідно ввести електронну пошту та пароль");
         }
 
-        const user =  await User.findOne({email: email.toLowerCase()});
+        const user = await User.findOne({email: email.toLowerCase()});
         if (!user) {
             throw ApiError.BadRequest("Користувача не знайдено");
         }
@@ -30,7 +31,7 @@ class UserService {
             throw ApiError.BadRequest("Необхідно ввести електронну пошту, пароль, ім'я та прізвище");
         }
 
-        const existingUser =  await User.findOne({email: email.toLowerCase()})
+        const existingUser = await User.findOne({email: email.toLowerCase()})
         if (existingUser) {
             throw ApiError.BadRequest("Користувач вже існує");
         }
@@ -74,7 +75,7 @@ class UserService {
 
 
     async createSession(user) {
-        const userDto = new UserDto(user);
+        const userDto = await new UserDto(user);
         const tokens = {
             access_token: generateAccessToken({...userDto}),
             refresh_token: generateRefreshToken({...userDto})
@@ -111,7 +112,7 @@ class UserService {
 
     async getAllUsers() {
         const users = await User.find({});
-        return users.map(user => new UserDto(user));
+        return Promise.all(users.map(async user => await new UserDto(user)));
     }
 
     async getUserById(id) {
@@ -126,7 +127,7 @@ class UserService {
 
 
     async updateUser(id, targetId, user) {
-        const targetUser =  await User.findOne({_id: targetId});
+        const targetUser = await User.findOne({_id: targetId});
         if (!targetUser) {
             throw ApiError.BadRequest("Користувача не знайдено");
         }
@@ -135,13 +136,14 @@ class UserService {
         }
 
         const updateData = {};
-        if(user.email){
-            const existingUser =  await User.findOne({email: user.email.toLowerCase()});
+        if (user.email) {
+            const existingUser = await User.findOne({email: user.email.toLowerCase()});
             if (existingUser) {
                 throw ApiError.BadRequest("Адрес електронної пошти вже занято");
             }
             updateData.email = user.email.toLowerCase();
             updateData.is_activated = false;
+
             const activation_link = uuidv4();
             updateData.activation_link = activation_link;
             mailService.sendActivationMail(user.email, `${process.env.SERVER_URL}/api/activate/${activation_link}`);
@@ -149,17 +151,20 @@ class UserService {
         if (user.password) {
             updateData.password = hashPassword(user.password);
         }
-        if(user.name) {
+        if (user.name) {
             updateData.name = user.name;
         }
-        if(user.surname) {
+        if (user.surname) {
             updateData.surname = user.surname;
         }
-        if(user.avatar) {
+        if (user.avatar) {
             updateData.avatar = user.avatar;
+            if (targetUser.avatar) {
+                deleteFile(targetUser.avatar);
+            }
         }
 
-        return User.findOneAndUpdate({_id: targetId}, updateData, {new: true});
+        return new UserDto(await User.findOneAndUpdate({_id: targetId}, updateData, {new: true}));
     }
 
     async deleteUser(id, targetId) {

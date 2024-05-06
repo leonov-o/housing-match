@@ -1,3 +1,5 @@
+import {getObjectSignedUrl} from "../utils/s3.js";
+
 export class UserDto {
     id;
     email;
@@ -13,5 +15,9 @@ export class UserDto {
         this.surname = model.surname;
         this.avatar = model.avatar;
         this.is_activated = model.is_activated;
+        return new Promise(resolve => model.avatar ? getObjectSignedUrl(model.avatar).then(url => resolve({
+            ...this,
+            avatar: url
+        })) : resolve(this));
     }
 }
