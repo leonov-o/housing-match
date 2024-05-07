@@ -117,11 +117,17 @@ class UserService {
 
     async getUserById(id) {
         const user = await User.findOne({_id: id});
+        if (!user) {
+            throw ApiError.BadRequest("Користувача не знайдено");
+        }
         return new UserDto(user);
     }
 
     async getUserByEmail(email) {
         const user = await User.findOne({email: email.toLowerCase()});
+        if (!user) {
+            throw ApiError.BadRequest("Користувача не знайдено");
+        }
         return new UserDto(user);
     }
 

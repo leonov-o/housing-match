@@ -5,14 +5,14 @@ class UserController {
 
     async login(req, res, next) {
         try {
-            const tokens = await userService.login(req.body);
-            res.cookie("refreshToken", tokens.refresh_token, {
+            const data = await userService.login(req.body);
+            res.cookie("refreshToken", data.refresh_token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 30
             });
             res.status(200).json({
                 success: true,
-                tokens
+                data
             });
         } catch (e) {
             next(e);
@@ -21,14 +21,14 @@ class UserController {
 
     async register(req, res, next) {
         try {
-            const tokens = await userService.register(req.body);
-            res.cookie("refreshToken", tokens.refresh_token, {
+            const data = await userService.register(req.body);
+            res.cookie("refreshToken", data.refresh_token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 30
             });
             res.status(200).json({
                 success: true,
-                tokens
+                data
             });
         } catch (e) {
             next(e);
@@ -59,9 +59,12 @@ class UserController {
     async refresh(req, res, next) {
         try {
             const {refreshToken} = req.cookies;
-            const userData = await userService.refresh(refreshToken);
-            res.cookie('refreshToken', userData.refresh_token, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
-            return res.json(userData);
+            const data = await userService.refresh(refreshToken);
+            res.cookie('refreshToken', data.refresh_token, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+            return  res.status(200).json({
+                success: true,
+                data
+            });
         } catch (e) {
             next(e);
         }
