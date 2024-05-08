@@ -24,6 +24,7 @@ router.post("/tags", tagController.createTag);
 
 router.get("/housing", housingController.getHousing);
 router.get("/housing/:id", housingController.getHousingById);
+router.get("/housing-count", housingController.getHousingCountByCity);
 router.post("/housing", authMiddleware, housingController.createHousing);
 router.put("/housing/:id", authMiddleware, housingController.updateHousing);
 router.delete("/housing/:id", authMiddleware, housingController.deleteHousing);

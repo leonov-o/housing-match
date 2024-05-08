@@ -26,6 +26,18 @@ class HousingController {
         }
     }
 
+    async getHousingCountByCity(req, res, next) {
+        try {
+            const housing = await housingService.getHousingCountByCity();
+            res.status(200).json({
+                success: true,
+                data: housing
+            });
+        } catch (e) {
+            next(e);
+        }
+    }
+
     async createHousing(req, res, next) {
         try {
             const housing = await housingService.createHousing(req.body, req.user.id);
