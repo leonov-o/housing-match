@@ -38,7 +38,7 @@ export async function getObjectSignedUrl(fileName) {
     }
 
     const command = new GetObjectCommand(params);
-    const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
+    const url = await getSignedUrl(s3Client, command, {expiresIn: 30 * 60});
 
     return url
 }

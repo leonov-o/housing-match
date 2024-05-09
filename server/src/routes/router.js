@@ -24,6 +24,7 @@ router.post("/tags", tagController.createTag);
 
 router.get("/housing", housingController.getHousing);
 router.get("/housing/:id", housingController.getHousingById);
+router.get("/housing-count", housingController.getHousingCountByCity);
 router.post("/housing", authMiddleware, housingController.createHousing);
 router.put("/housing/:id", authMiddleware, housingController.updateHousing);
 router.delete("/housing/:id", authMiddleware, housingController.deleteHousing);
@@ -33,7 +34,7 @@ router.post("/login", userController.login);
 router.post("/register", userController.register);
 router.get('/activate/:link', userController.activate);
 router.post("/logout", authMiddleware, userController.logout);
-router.post("/refresh", userController.refresh);
+router.get("/refresh", userController.refresh);
 router.get("/users", userController.getAllUsers);
 router.get("/users/:id", userController.getUserById);
 router.get("/users/email/:email", userController.getUserByEmail);

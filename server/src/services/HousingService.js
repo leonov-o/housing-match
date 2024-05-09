@@ -7,62 +7,66 @@ import {deleteFile} from "../utils/s3.js";
 class HousingService {
 
     async getHousing(body) {
-        const {page, limit, filters} = body;
+        const {page = 0, limit = 10, filters = {}} = body;
+        const {region, city, priceFrom, priceTo, rooms, capacity, tags, ownerId, sort} = filters;
+
         const searchQuery = {};
-        if (filters.region) {
-            searchQuery.region = filters.region;
-        }
-        if (filters.city) {
-            searchQuery.city = filters.city;
-        }
-        if (filters.priceFrom !== undefined) {
-            searchQuery.price = { $gte: filters.priceFrom };
-        }
-        if (filters.priceTo !== undefined) {
-            if (!searchQuery.price) {
-                searchQuery.price = {};
-            }
-            searchQuery.price.$lte = filters.priceTo;
-        }
-        if (filters.rooms !== undefined) {
-            searchQuery.rooms = filters.rooms;
-        }
-        if (filters.capacity !== undefined) {
-            searchQuery.capacity = filters.capacity;
-        }
-        if (filters.tags && filters.tags.length > 0) {
-            searchQuery.tags = { $in: filters.tags };
-        }
+        const sortQuery = {};
 
-        if (filters.ownerId !== undefined) {
-            searchQuery.owner_id = filters.ownerId;
+        if (region) searchQuery.region = region;
+        if (city) searchQuery.city = city;
+        if (priceFrom !== undefined) searchQuery.price = {$gte: priceFrom};
+        if (priceTo !== undefined) {
+            searchQuery.price = searchQuery.price || {};
+            searchQuery.price.$lte = priceTo;
         }
+        if (rooms !== undefined) searchQuery.rooms = rooms;
+        if (capacity !== undefined) searchQuery.capacity = capacity;
+        if (tags && tags.length > 0) searchQuery.tags = {$in: tags};
+        if (ownerId !== undefined) searchQuery.owner_id = ownerId;
 
-        let sortQuery = {};
+        if (sort === "priceAsc") sortQuery.price = 1;
+        else if (sort === "priceDesc") sortQuery.price = -1;
+        else if (sort === "newest") sortQuery.createdAt = -1;
+        else if (sort === "popular") sortQuery.views = -1;
 
-        if (filters.sort === "priceAsc") {
-            sortQuery.price = 1; // Спочатку дешевші
-        } else if (filters.sort === "priceDesc") {
-            sortQuery.price = -1; // Спочатку дорожчі
-        } else if (filters.sort === "newest") {
-            sortQuery.createdAt = -1; // Спочатку нові (за датою створення)
-        } else if (filters.sort === "popular") {
-            sortQuery.views = -1; // Спочатку популярні (за кількістю переглядів)
-        }
 
-        const housing =  await Housing.find(searchQuery).sort(sortQuery).limit(limit).skip(page * limit);
-        return Promise.all(housing.map(async item => await new HousingDto(item)));
+        const housing = await Housing.find(searchQuery)
+            .sort(sortQuery)
+            .limit(limit)
+            .skip(page * limit);
+        const housingDtos = await Promise.all(housing.map(item => new HousingDto(item)));
+        return housingDtos;
 
     }
 
     async getHousingById(id) {
         const housing = await Housing.findById(id);
-        if(!housing) {
+        if (!housing) {
             throw ApiError.BadRequest("Житло не знайдено");
         }
         housing.views = housing.views + 1;
         await housing.save();
         return new HousingDto(housing);
+    }
+
+    async getHousingCountByCity() {
+        return Housing.aggregate([
+            {
+                '$group': {
+                    '_id': '$city',
+                    'count': {
+                        '$sum': 1
+                    }
+                }
+            }, {
+                '$project': {
+                    'city': '$_id',
+                    'count': 1,
+                    '_id': 0
+                }
+            }
+        ]).sort({count: -1});
     }
 
     async createHousing(housing, ownerId) {
