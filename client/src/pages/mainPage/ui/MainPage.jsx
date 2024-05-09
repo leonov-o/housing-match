@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {SearchForm} from "@/widgets";
 import Slider from "react-slick";
 import {HousingCard} from "@/entities/housing/ui/HousingCard.jsx";
-import photo from "@/assets/images/main-page-bg.png";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import {ChevronRightIcon} from "@radix-ui/react-icons";
@@ -38,7 +37,7 @@ export const MainPage = () => {
 
     return (
         <div className="">
-            <div className="bg-[url('./assets/images/main-page-bg.png')] -translate-y-[88px] pt-36 pb-20 ">
+            <div className="pt-20 pb-20 ">
                 <div className="px-40 text-white font-montserrat">
                     <h1 className="text-6xl font-bold">Знайди житло своєї Мрії</h1>
                     <div className="mt-5 mb-14 text-4xl font-semibold leading-normal">Для вас доступно на<br/> вибір
@@ -47,7 +46,7 @@ export const MainPage = () => {
                     <SearchForm/>
                 </div>
 
-                <div className="mt-16 px-40">
+                <div className="mt-14 px-40">
                     <div className="text-4xl font-semibold text-white font-montserrat">Рекомендовані пропозиції</div>
                     <div className="mt-8">
                         <Slider {...sliderOpts}>
@@ -67,7 +66,7 @@ export const MainPage = () => {
                     </div>
                 </div>
             </div>
-            <div className="px-40 pb-10">
+            <div className="px-40 py-10">
                 <div className="text-center text-4xl font-semibold text-black font-montserrat">
                     Оренда квартир у різних містах України
                 </div>

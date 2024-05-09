@@ -5,7 +5,7 @@ import {Input} from "@/shared/ui/Input.jsx";
 import clsx from "clsx";
 import {Link, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchUserLogin, fetchUserRegistration} from "@/entities/user/model/store/actionCreators.js";
+import {fetchUserRegistration} from "@/entities/user/model/store/actionCreators.js";
 
 export const RegistrationPage = () => {
     const {isAuth, isLoading, error} = useSelector(state => state.user)

@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {fetchTags} from "@/entities/tag/model/store/actionCreators.js";
+import {fetchTags} from "@/entities/tag";
 
 
 const initialState = {

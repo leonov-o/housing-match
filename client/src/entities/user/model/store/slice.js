@@ -3,7 +3,7 @@ import {
     fetchUserLogin,
     fetchUserLogout,
     fetchUserRefresh,
-    fetchUserRegistration
+    fetchUserRegistration, fetchUserUpdate
 } from "@/entities/user/model/store/actionCreators.js";
 
 const initialUser = {
@@ -17,7 +17,7 @@ const initialUser = {
 
 const initialState = {
     user: initialUser,
-    isLoading: false,
+    isLoading: true,
     isAuth: false,
     error: ""
 }
@@ -54,15 +54,25 @@ export const userSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload;
             })
+            .addCase(fetchUserRefresh.pending, (state, action) => {
+                state.isLoading = true
+            })
             .addCase(fetchUserRefresh.fulfilled, (state, action) => {
                 state.error = '';
                 state.user = action.payload;
                 state.isAuth = true;
+                state.isLoading = false
+            })
+            .addCase(fetchUserRefresh.rejected, (state, action) => {
+                state.isLoading = false
             })
             .addCase(fetchUserLogout.fulfilled, (state, action) => {
                 state.error = '';
                 state.user = initialUser;
                 state.isAuth = false;
+            })
+            .addCase(fetchUserUpdate.fulfilled, (state, action) => {
+                state.user = action.payload;
             })
     }
 });

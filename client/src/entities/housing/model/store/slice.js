@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {fetchHousingWithFilters} from "@/entities/housing/model/index.js";
+import {fetchHousingWithFilters} from "@/entities/housing";
 
 
 
