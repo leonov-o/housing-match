@@ -34,7 +34,7 @@ router.post("/login", userController.login);
 router.post("/register", userController.register);
 router.get('/activate/:link', userController.activate);
 router.post("/logout", authMiddleware, userController.logout);
-router.post("/refresh", userController.refresh);
+router.get("/refresh", userController.refresh);
 router.get("/users", userController.getAllUsers);
 router.get("/users/:id", userController.getUserById);
 router.get("/users/email/:email", userController.getUserByEmail);

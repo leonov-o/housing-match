@@ -66,7 +66,7 @@ class HousingService {
                     '_id': 0
                 }
             }
-        ]).sort({count: -1}).limit(9);
+        ]).sort({count: -1});
     }
 
     async createHousing(housing, ownerId) {

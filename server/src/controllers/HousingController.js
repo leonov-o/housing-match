@@ -3,7 +3,7 @@ import {housingService} from "../services/index.js";
 class HousingController {
     async getHousing(req, res, next) {
         try {
-            const housing = await housingService.getHousing(req.body);
+            const housing = await housingService.getHousing(req.query);
             res.status(200).json({
                 success: true,
                 data: housing,

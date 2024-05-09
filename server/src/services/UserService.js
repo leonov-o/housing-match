@@ -69,8 +69,20 @@ class UserService {
             throw ApiError.UnauthorizedError();
         }
         const user = await User.findById(userData.id);
+        const userDto = await new UserDto(user);
+        const tokens = {
+            access_token: generateAccessToken({...userDto}),
+            refresh_token: generateRefreshToken({...userDto})
+        }
 
-        return this.createSession(user)
+        tokenFromDb.refresh_token = tokens.refresh_token;
+        tokenFromDb.expires_in = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
+        await tokenFromDb.save();
+
+        return {
+            ...tokens,
+            user: userDto
+        };
     }
 
 
