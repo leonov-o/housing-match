@@ -1,50 +1,19 @@
-import {useEffect, useState} from 'react'
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
+import {RouterProvider} from "react-router-dom";
+import {router, withStore} from "@/app/providers";
+import {withCheckAuth} from "@/app/providers/auth/withAuth.jsx";
+import {useEffect} from "react";
+import {useDispatch} from "react-redux";
+import {fetchTags} from "@/entities/tag/index.js";
 
 function App() {
-    const [cities, setCities] = useState([]);
+    const dispatch = useDispatch();
     useEffect(() => {
-        getCities()
-    }, []);
-
-    const getCities = async() => {
-        const cities = await fetch(import.meta.env.VITE_SERVER_URL + '/api/cities');
-        setCities(await cities.json());
-    }
+        dispatch(fetchTags())
+    }, [])
 
     return (
-        <div className="p-12 h-screen flex justify-center items-center">
-            <div className="w-96 h-96 overflow-auto ">
-                <Table>
-                    <TableCaption>Список міст</TableCaption>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-[100px]">Місто</TableHead>
-                            <TableHead className="text-right">Область</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {
-                            cities.map((city) => (
-                                <TableRow key={city.id}>
-                                    <TableCell>{city.city}</TableCell>
-                                    <TableCell className="text-right">{city.region}</TableCell>
-                                </TableRow>
-                            ))
-                        }
-                    </TableBody>
-                </Table>
-            </div>
-        </div>
+        <RouterProvider router={router}/>
     )
 }
 
-export default App
+export default withStore(withCheckAuth(App));
