@@ -154,7 +154,7 @@ class UserService {
         }
 
         const updateData = {};
-        if (user.email) {
+        if (user.email && user.email !== targetUser.email) {
             const existingUser = await User.findOne({email: user.email.toLowerCase()});
             if (existingUser) {
                 throw ApiError.BadRequest("Адрес електронної пошти вже занято");

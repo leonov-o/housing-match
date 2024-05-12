@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {SearchForm} from "@/widgets";
 import Slider from "react-slick";
 import {HousingCard} from "@/entities/housing/ui/HousingCard.jsx";
-import photo from "@/assets/images/main-page-bg.png";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import {ChevronRightIcon} from "@radix-ui/react-icons";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchHousingWithFilters, HousingService} from "@/entities/housing/model/index.js";
+import {Button} from "@/shared/ui/Button.jsx";
 
 let sliderOpts = {
     arrows: true,
@@ -17,10 +17,13 @@ let sliderOpts = {
     slidesToScroll: 1
 };
 export const MainPage = () => {
+    const [totalCount, setTotalCount] = useState(0);
     const [countByCity, setCountByCity] = useState([]);
     const {housing, isLoading: isLoadingHousing, error} = useSelector(state => state.housing)
     const {tags, isLoading: isLoadingTags} = useSelector(state => state.tags);
     const dispatch = useDispatch();
+
+
 
     useEffect(() => {
         dispatch(fetchHousingWithFilters({
@@ -33,21 +36,25 @@ export const MainPage = () => {
     }, []);
 
     useEffect(() => {
+        HousingService.getWithFilters({
+            page: 0,
+            limit: 9999
+        }).then(result => setTotalCount(result.totalCount));
+    }, []);
+    useEffect(() => {
         HousingService.getCountByCity().then(result => setCountByCity(result.data));
     }, []);
 
     return (
         <div className="">
-            <div className="bg-[url('./assets/images/main-page-bg.png')] -translate-y-[88px] pt-36 pb-20 ">
+            <div className="pt-20 pb-20 ">
                 <div className="px-40 text-white font-montserrat">
                     <h1 className="text-6xl font-bold">Знайди житло своєї Мрії</h1>
-                    <div className="mt-5 mb-14 text-4xl font-semibold leading-normal">Для вас доступно на<br/> вибір
-                        123456 варіантів
-                    </div>
+                    <div className="mt-5 mb-14 text-4xl font-semibold leading-normal">Для вас доступно на<br/> вибір {totalCount} варіантів</div>
                     <SearchForm/>
                 </div>
 
-                <div className="mt-16 px-40">
+                <div className="mt-14 px-40">
                     <div className="text-4xl font-semibold text-white font-montserrat">Рекомендовані пропозиції</div>
                     <div className="mt-8">
                         <Slider {...sliderOpts}>
@@ -67,7 +74,7 @@ export const MainPage = () => {
                     </div>
                 </div>
             </div>
-            <div className="px-40 pb-10">
+            <div className="px-40 py-10">
                 <div className="text-center text-4xl font-semibold text-black font-montserrat">
                     Оренда квартир у різних містах України
                 </div>
@@ -77,10 +84,11 @@ export const MainPage = () => {
                                                                                         count={count}/>)
                     }
                 </div>
-                <div
-                    className="mx-auto cursor-pointer flex items-center justify-center rounded-lg bg-blue-400 text-2xl font-medium text-white transition duration-300 w-[560px] h-[68px] font-inter hover:bg-blue-500">
+                <Button
+                    variant="primary"
+                    className="mx-auto text-2xl w-[560px] h-[68px]">
                     Здати квартиру в оренду
-                </div>
+                </Button>
             </div>
 
             <div className="px-40 bg-blue-400 py-10 text-white text-center text-lg font-inter">

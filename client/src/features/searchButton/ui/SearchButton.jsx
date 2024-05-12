@@ -1,12 +1,13 @@
 import React from 'react';
 import {MagnifyingGlassIcon} from "@radix-ui/react-icons";
+import {Button} from "@/shared/ui/Button.jsx";
 
 export const SearchButton = () => {
     return (
-        <div className="flex justify-center items-center px-4 h-12 rounded-lg bg-blue-400 hover:bg-blue-500 transform duration-200 cursor-pointer text-white font-inter font-medium">
-            <MagnifyingGlassIcon width={20} height={20} className="text-white"/>
+        <Button variant="primary" className="px-4 text-xl">
+            <MagnifyingGlassIcon width={25} height={25} className="text-white"/>
             <div className="ml-1.5">Пошук</div>
-        </div>
+        </Button>
     );
 };
 

@@ -76,11 +76,11 @@ class HousingService {
         if (!housing.name || !housing.region || !housing.city || !housing.address || housing.price < 0 || housing.rooms < 0 || housing.capacity < 0) {
             throw ApiError.BadRequest("Невірні дані про житло");
         }
-        if (housing.images.length < 1) {
+        if (!housing.images || housing.images.length < 1) {
             throw ApiError.BadRequest("Потрібне хоча б одне зображення");
         }
-        if (housing.contacts.length < 1) {
-            throw ApiError.BadRequest("Потрібен хоча б одни контакт");
+        if (!housing.contacts || housing.contacts.length < 1) {
+            throw ApiError.BadRequest("Потрібен хоча б один контакт");
         }
 
         const newHousing = await Housing.create({...housing, owner_id: ownerId})

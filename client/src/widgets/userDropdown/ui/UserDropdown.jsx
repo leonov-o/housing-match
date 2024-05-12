@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {ChevronDownIcon, ChevronUpIcon, ExitIcon, GearIcon, HomeIcon} from "@radix-ui/react-icons";
+import {ChevronDownIcon, ChevronUpIcon, HomeIcon} from "@radix-ui/react-icons";
 import {useSelector} from "react-redux";
 import {Avatar} from "@/shared/ui/Avatar.jsx";
 import {Link} from "react-router-dom";
