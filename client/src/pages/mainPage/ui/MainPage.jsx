@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import {ChevronRightIcon} from "@radix-ui/react-icons";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchHousingWithFilters, HousingService} from "@/entities/housing/model/index.js";
+import {Button} from "@/shared/ui/Button.jsx";
 
 let sliderOpts = {
     arrows: true,
@@ -16,10 +17,13 @@ let sliderOpts = {
     slidesToScroll: 1
 };
 export const MainPage = () => {
+    const [totalCount, setTotalCount] = useState(0);
     const [countByCity, setCountByCity] = useState([]);
     const {housing, isLoading: isLoadingHousing, error} = useSelector(state => state.housing)
     const {tags, isLoading: isLoadingTags} = useSelector(state => state.tags);
     const dispatch = useDispatch();
+
+
 
     useEffect(() => {
         dispatch(fetchHousingWithFilters({
@@ -32,6 +36,12 @@ export const MainPage = () => {
     }, []);
 
     useEffect(() => {
+        HousingService.getWithFilters({
+            page: 0,
+            limit: 9999
+        }).then(result => setTotalCount(result.totalCount));
+    }, []);
+    useEffect(() => {
         HousingService.getCountByCity().then(result => setCountByCity(result.data));
     }, []);
 
@@ -40,9 +50,7 @@ export const MainPage = () => {
             <div className="pt-20 pb-20 ">
                 <div className="px-40 text-white font-montserrat">
                     <h1 className="text-6xl font-bold">Знайди житло своєї Мрії</h1>
-                    <div className="mt-5 mb-14 text-4xl font-semibold leading-normal">Для вас доступно на<br/> вибір
-                        123456 варіантів
-                    </div>
+                    <div className="mt-5 mb-14 text-4xl font-semibold leading-normal">Для вас доступно на<br/> вибір {totalCount} варіантів</div>
                     <SearchForm/>
                 </div>
 
@@ -76,10 +84,11 @@ export const MainPage = () => {
                                                                                         count={count}/>)
                     }
                 </div>
-                <div
-                    className="mx-auto cursor-pointer flex items-center justify-center rounded-lg bg-blue-400 text-2xl font-medium text-white transition duration-300 w-[560px] h-[68px] font-inter hover:bg-blue-500">
+                <Button
+                    variant="primary"
+                    className="mx-auto text-2xl w-[560px] h-[68px]">
                     Здати квартиру в оренду
-                </div>
+                </Button>
             </div>
 
             <div className="px-40 bg-blue-400 py-10 text-white text-center text-lg font-inter">

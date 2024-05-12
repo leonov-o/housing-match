@@ -13,7 +13,7 @@ export const ProfileLayoutPage = () => {
     }, [isAuth, isLoading]);
 
     return (
-        <div className="mt-36 mx-40 p-6 bg-white rounded-t-2xl h-[76vh]">
+        <div className="mt-36 mx-40 p-6 bg-white rounded-t-2xl h-[76vh] overflow-y-auto">
             {
                 !user.is_activated && (
                     <div className="bg-yellow-100 p-4 rounded-lg mb-5 text-inter text-yellow-600">
@@ -27,7 +27,7 @@ export const ProfileLayoutPage = () => {
                 )
             }
             <div className="flex">
-                <div className="w-1/4 border-r-gray-400 border-r-2 font-inter font-medium text-xl">
+                <div className="w-1/4  border-r-2 border-gray-300 font-inter font-medium text-xl">
                     <Link to="/profile">
                         <div
                             className="px-7 h-10 hover:bg-gray-200 transition duration-300 flex items-center rounded-l-lg cursor-pointer">Профіль
@@ -43,7 +43,7 @@ export const ProfileLayoutPage = () => {
                         className="text-red-400 px-7 h-10 hover:bg-gray-200 transition duration-300 flex items-center rounded-l-lg cursor-pointer">Видалити
                         акаунт</div>
                 </div>
-                <div className="flex flex-grow justify-center p-4">
+                <div className="p-4 flex-grow">
                     <Outlet/>
                 </div>
             </div>

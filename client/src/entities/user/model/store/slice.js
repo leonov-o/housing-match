@@ -4,7 +4,7 @@ import {
     fetchUserLogout,
     fetchUserRefresh,
     fetchUserRegistration, fetchUserUpdate
-} from "@/entities/user/model/store/actionCreators.js";
+} from "@/entities/user/model";
 
 const initialUser = {
     id: "",
@@ -25,7 +25,11 @@ const initialState = {
 export const userSlice = createSlice({
     name: "user",
     initialState,
-    reducers: {},
+    reducers: {
+        setLoading: (state, action) => {
+            state.isLoading = action.payload
+        }
+    },
     extraReducers: builder => {
         builder
             .addCase(fetchUserRegistration.pending, (state) => {

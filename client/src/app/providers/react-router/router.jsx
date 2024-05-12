@@ -1,5 +1,14 @@
 import {createBrowserRouter} from "react-router-dom";
-import {LayoutPage, LoginPage, MainPage, ProfileLayoutPage, ProfilePage, RegistrationPage} from "@/pages";
+import {
+    CreateHousingPage,
+    LayoutPage,
+    LoginPage,
+    MainPage,
+    MyHousingPage,
+    ProfileLayoutPage,
+    ProfilePage,
+    RegistrationPage
+} from "@/pages";
 
 export const router = createBrowserRouter([
     {
@@ -20,9 +29,25 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: "/profile/housing",
-                        element: <div>Housing</div>
+                        element: <MyHousingPage/>
+                    },
+                    {
+                        path: "/profile/housing/create",
+                        element: <CreateHousingPage/>
+                    },
+                    {
+                        path: "/profile/housing/create/:id",
+                        element: <CreateHousingPage/>
                     }
                 ]
+            },
+            {
+                path: "/housing",
+                element: <div>Housing Page</div>
+            },
+            {
+                path: "/housing/:id",
+                element: <div>housingID</div>
             }
         ]
     },

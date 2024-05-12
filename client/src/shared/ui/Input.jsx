@@ -12,7 +12,7 @@ export const Input = ({label, type,  className, ...props}) => {
             <input
                 type={type === "password" ? (show ? "text" : "password") : type}
                 className={twMerge(
-                    "ml-2 h-12 w-64 rounded-lg bg-gray-100 p-4 text-lg text-black font-medium outline-none font-montserrat font-medium",
+                    "h-12 w-64 rounded-lg bg-gray-100 p-4 text-lg text-black font-medium outline-none font-montserrat",
                     className
                 )}
                 {...props}
