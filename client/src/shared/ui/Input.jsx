@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {twMerge} from "tailwind-merge";
 import {EyeClosedIcon, EyeOpenIcon} from "@radix-ui/react-icons";
 
-export const Input = ({label, type,  className, ...props}) => {
+export const Input = ({label, type, className, ...props}) => {
     const [show, setShow] = useState(false);
     return (
         <div className="relative">

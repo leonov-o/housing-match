@@ -1,13 +1,13 @@
 import {createBrowserRouter} from "react-router-dom";
 import {
-    CreateHousingPage,
+    CreateHousingPage, HousingPage,
     LayoutPage,
     LoginPage,
     MainPage,
     MyHousingPage,
     ProfileLayoutPage,
     ProfilePage,
-    RegistrationPage
+    RegistrationPage, SearchPage
 } from "@/pages";
 
 export const router = createBrowserRouter([
@@ -43,11 +43,11 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/housing",
-                element: <div>Housing Page</div>
+                element: <SearchPage/>
             },
             {
                 path: "/housing/:id",
-                element: <div>housingID</div>
+                element: <HousingPage/>
             }
         ]
     },

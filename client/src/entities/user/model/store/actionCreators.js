@@ -1,6 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {UserService} from "@/entities/user/model/index.js";
-import {HousingService} from "@/entities/index.js";
 
 export const fetchUserRegistration = createAsyncThunk(
     "user/register",

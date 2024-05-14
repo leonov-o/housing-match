@@ -63,7 +63,7 @@ export const MainPage = () => {
                                     ? new Array(8).fill(0).map((_, index) => <div key={"skeleton_" + index}
                                                                                   className="bg-white w-full h-96 rounded-3xl shadow-sm shadow-gray-300 animate-pulse"></div>)
                                     : housing.map((housing) => (
-                                        <HousingCard key={housing._id} image={housing.images[0].imageLink}
+                                        <HousingCard key={housing.id} id={housing.id} image={housing.images[0].imageLink}
                                                      city={housing.city} region={housing.region}
                                                      address={housing.address} price={housing.price} rooms={housing.rooms}
                                                      capacity={housing.capacity}

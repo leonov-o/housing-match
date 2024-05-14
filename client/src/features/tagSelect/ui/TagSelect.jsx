@@ -67,7 +67,7 @@ export const TagSelect = ({value, onSelect}) => {
                             {
                                 filteredTags.length > 0
                                     ? filteredTags.map(tag => <div key={tag.id}
-                                                                   className="cursor-pointer border-b-2 p-2 text-lg font-normal font-montserrat hover:bg-gray-100"
+                                                                   className="cursor-pointer border-b-2 p-2 text-lg font-normal font-montserrat hover:bg-gray-100 select-none"
                                                                    onClick={() => handleClick(tag.id)}>{tag.name}</div>)
                                     : <div className="text-іьlg font-normal font-montserrat border-b-2 p-1">Нічого не
                                         знайдено</div>

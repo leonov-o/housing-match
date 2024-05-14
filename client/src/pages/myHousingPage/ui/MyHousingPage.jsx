@@ -65,7 +65,7 @@ const HousingItem = ({housing}) => {
                          alt="housingImage"/>
                 </div>
                 <div className="ml-4 font-montserrat font-medium text-sm space-y-1">
-                    <div className="">{housing.name}</div>
+                    <div className="w-96">{housing.name}</div>
                     <div className="">{housing.address}</div>
                     <div className="">{housing.city}, {housing.region}</div>
                     <div className="">Кімнати: {housing.rooms} • Місць: {housing.capacity}</div>
