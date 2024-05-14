@@ -3,25 +3,14 @@ import {Input} from "@/shared/ui/Input.jsx";
 import {Combobox} from "@/shared/ui/Combobox.jsx";
 import {CityService, fetchHousingCreate, fetchHousingUpdate, HousingService} from "@/entities/index.js";
 import {TextArea} from "@/shared/ui/TextArea.jsx";
-import Slider from "react-slick";
 import {Button} from "@/shared/ui/Button.jsx";
-import {twMerge} from "tailwind-merge";
 import {Cross1Icon} from "@radix-ui/react-icons";
 import {TagSelect} from "@/features/index.js";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {uploadImage} from "@/shared/utils/uploadImage.js";
+import {ImageSlider} from "@/shared/ui/ImageSlider.jsx";
 
-let sliderOpts = {
-    arrows: true,
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    nextArrow: <SampleNextArrow/>,
-    prevArrow: <SamplePrevArrow/>
-};
 
 export const CreateHousingPage = () => {
     const {error} = useSelector(state => state.housing);
@@ -78,7 +67,6 @@ export const CreateHousingPage = () => {
 
 
     const handleSave = async () => {
-        const filenames = await Promise.all(Array.from(images).map(image => uploadImage(image)));
         const values = {
             name,
             description,
@@ -88,9 +76,11 @@ export const CreateHousingPage = () => {
             address,
             rooms,
             capacity,
-            images: filenames,
             contacts,
             tags
+        }
+        if(images instanceof FileList) {
+            values.images = await Promise.all(Array.from(images).map(image => uploadImage(image)))
         }
 
         if(!isEdit) {
@@ -114,16 +104,7 @@ export const CreateHousingPage = () => {
             <div className="flex justify-between">
                 <div className="px-12">
                     <div className="text-lg font-semibold font-montserrat ml-3 mb-1.5">Зображення</div>
-                    <Slider {...sliderOpts} className={twMerge(
-                        "w-96 h-64 rounded-3xl",
-                        !images.length && "bg-gray-100"
-                    )}>
-                        {
-                            images.length > 0 && Array.from(images).map(image => <div key={image}
-                                                                                      className="w-96 h-64 rounded-3xl overflow-hidden">
-                                <img className=" mx-auto h-full" src={image.hasOwnProperty("imageLink") ? image.imageLink : URL.createObjectURL(image)} alt=""/></div>)
-                        }
-                    </Slider>
+                    <ImageSlider images={images}/>
                     <div className="mt-8">
                         <label>
                             <Button variant="primary" className="w-80 mx-auto">Завантажити зображення</Button>
@@ -193,25 +174,4 @@ export const CreateHousingPage = () => {
 };
 
 
-function SampleNextArrow(props) {
-    const {className, style, onClick} = props;
-    return (
-        <div
-            className={className}
-            style={{...style, display: "block", background: "gray", borderRadius: "100%"}}
-            onClick={onClick}
-        />
-    );
-}
-
-function SamplePrevArrow(props) {
-    const {className, style, onClick} = props;
-    return (
-        <div
-            className={className}
-            style={{...style, display: "block", background: "gray", borderRadius: "100%"}}
-            onClick={onClick}
-        />
-    );
-}
 

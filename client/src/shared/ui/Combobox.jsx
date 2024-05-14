@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {ChevronUpIcon, ChevronDownIcon, MagnifyingGlassIcon} from "@radix-ui/react-icons";
 import {twMerge} from "tailwind-merge";
 
-export const Combobox = ({data, title, searchTitle, notFoundTitle, value, onSelect, disabled}) => {
+export const Combobox = ({data, title, searchTitle, notFoundTitle, value, onSelect, disabled, className}) => {
     const [open, setOpen] = useState(false);
     const [filteredData, setFilteredData] = useState(data);
     const comboboxRef = useRef(null);
@@ -14,7 +14,6 @@ export const Combobox = ({data, title, searchTitle, notFoundTitle, value, onSele
                 searchTitle && filterData("");
             }
         };
-
         document.addEventListener('mousedown', handleClickOutside);
 
         return () => {
@@ -42,7 +41,10 @@ export const Combobox = ({data, title, searchTitle, notFoundTitle, value, onSele
     };
 
     return (
-        <div ref={comboboxRef} className="relative text-black font-inter w-64">
+        <div ref={comboboxRef} className={twMerge(
+            "relative text-black font-inter w-64",
+            className
+        )}>
             <div
                 className={twMerge(
                     "flex items-center h-12 justify-between rounded-lg bg-gray-100 p-4 text-lg font-medium hover:bg-gray-200 cursor-pointer",

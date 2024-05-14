@@ -15,15 +15,15 @@ class HousingService {
 
         if (region) searchQuery.region = region;
         if (city) searchQuery.city = city;
-        if (priceFrom !== undefined) searchQuery.price = {$gte: priceFrom};
-        if (priceTo !== undefined) {
+        if (priceFrom) searchQuery.price = {$gte: priceFrom};
+        if (priceTo) {
             searchQuery.price = searchQuery.price || {};
             searchQuery.price.$lte = priceTo;
         }
-        if (rooms !== undefined) searchQuery.rooms = rooms;
-        if (capacity !== undefined) searchQuery.capacity = capacity;
+        if (rooms) searchQuery.rooms = rooms;
+        if (capacity) searchQuery.capacity = capacity;
         if (tags && tags.length > 0) searchQuery.tags = {$in: tags};
-        if (ownerId !== undefined) searchQuery.owner_id = ownerId;
+        if (ownerId) searchQuery.owner_id = ownerId;
 
         if (sort === "priceAsc") sortQuery.price = 1;
         else if (sort === "priceDesc") sortQuery.price = -1;

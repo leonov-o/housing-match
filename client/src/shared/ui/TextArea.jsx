@@ -1,6 +1,5 @@
 import React from 'react';
 import {twMerge} from "tailwind-merge";
-import {EyeClosedIcon, EyeOpenIcon} from "@radix-ui/react-icons";
 
 export const TextArea = ({label, className, ...props}) => {
     return (
