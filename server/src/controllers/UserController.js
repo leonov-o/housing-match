@@ -9,6 +9,7 @@ class UserController {
             res.cookie("refreshToken", data.refresh_token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 30,
+                sameSite: 'none',
                 domain: process.env.DOMAIN
             });
             res.status(200).json({
@@ -26,6 +27,7 @@ class UserController {
             res.cookie("refreshToken", data.refresh_token, {
                 httpOnly: true,
                 maxAge: 1000 * 60 * 60 * 24 * 30,
+                sameSite: 'none',
                 domain: process.env.DOMAIN
             });
             res.status(200).json({
@@ -64,7 +66,7 @@ class UserController {
         try {
             const {refreshToken} = req.cookies;
             const data = await userService.refresh(refreshToken);
-            res.cookie('refreshToken', data.refresh_token, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, domain: process.env.DOMAIN});
+            res.cookie('refreshToken', data.refresh_token, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'none', domain: process.env.DOMAIN});
             return  res.status(200).json({
                 success: true,
                 data
