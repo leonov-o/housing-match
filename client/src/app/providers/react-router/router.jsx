@@ -1,16 +1,18 @@
-import {createBrowserRouter} from "react-router-dom";
+import {createHashRouter} from "react-router-dom";
 import {
-    CreateHousingPage, HousingPage,
+    CreateHousingPage,
+    HousingPage,
     LayoutPage,
     LoginPage,
     MainPage,
     MyHousingPage,
     ProfileLayoutPage,
     ProfilePage,
-    RegistrationPage, SearchPage
+    RegistrationPage,
+    SearchPage
 } from "@/pages";
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
     {
         path: "/",
         element: <LayoutPage/>,
