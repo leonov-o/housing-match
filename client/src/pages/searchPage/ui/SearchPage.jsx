@@ -65,7 +65,7 @@ const HousingCard = ({housing}) => {
 
     return (
         <div className="flex justify-between border-b-2 border-gray-300 bg-white px-10 py-5">
-            <div className="overflow-hidden rounded-lg">
+            <div className="overflow-hidden rounded-lg w-96">
                 <img src={housing.images[0].imageLink} alt=""/>
             </div>
 
